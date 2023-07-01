@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Externe Stylesheets -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+
+    <!-- Styling für de Body des textfelder  (CSS Styling) -->
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #7F7FD5;
+            background: -webkit-linear-gradient(to right, #0b00de, #2e68d3, #5e5ee1);
+            background: linear-gradient(to right, #1b1c80, #2c69cb, #1b1bdc);
+        }
+     /* styling, grösse, farbe bzw. de form usw. */
+        .card {
+            width: 600px;
+            border: none;
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .nav-pills .nav-link {
+            color: #007bff;
+        }
+
+        .nav-pills .nav-link.active {
+            color: #ffffff;
+            background-color: #007bff;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+        }
+
+        .form-group label {
+            color: #007bff;
+        }
+
+        .form-control {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        #history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* für de XOR-Verschlüsselung tab styling */
+        .xor-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .xor-form-group label {
+            color: #007bff;
+        }
+
+        .xor-form-control {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+            color: #000000;
+        }
+
+        /* Das isch de styling allgemein in Dark Mode */
+        body.dark-mode {
+            background: #000000;
+        }
+
+        .card.dark-mode {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        .card-header.dark-mode {
+            background-color: #08ca79;
+        }
+
+        .nav-pills .nav-link.dark-mode {
+            color: #ffffff;
+        }
+
+        .nav-pills .nav-link.active.dark-mode {
+            background-color: #08ca79;
+        }
+
+        .form-group.dark-mode label {
+            color: #08ca79;
+        }
+
+        .form-control.dark-mode {
+            background-color: #333333;
+            border-color: #555555;
+            color: #ffffff;
+        }
+
+        .btn-primary.dark-mode {
+            background-color: #08ca79;
+            border-color: #08ca79;
+        }
+
+        #history.dark-mode {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        #history.dark-mode .list-group-item {
+            background-color: #111111;
+            color: #ffffff;
+            border-color: #333333;
+        }
+
+        #history.dark-mode .list-group-item p {
+            color: #ffffff;
+        }
+
+        .card-footer.dark-mode {
+            background-color: #222222;
+            color: #ffffff;
+        }
+
+        .table td {
+            padding: 0.5rem;
+        }
+
+        /* Styling für de Eklärungstext wo une dra staht*/
+        .explanation {
+            text-align: center;
+            margin-top: 10px;
+        }
+    
+    </style>
+</head>
+<body>
+<!-- Tabs werden erstellt hier und no die buttons dazue--> 
+    <div class="card">
+        <div class="card-header text-center">
+            Verschlüsselungen und Entschlüsselung
+        </div>
+        <div class="card-body">
+            <!-- Navigationstabs für jedi verschlüsselter Funktionen-->
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="caesar-encrypt-tab" data-toggle="pill" href="#caesar-encrypt" role="tab" aria-controls="caesar-encrypt" aria-selected="true">Caesar-Verschlüsseln</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="caesar-decrypt-tab" data-toggle="pill" href="#caesar-decrypt" role="tab" aria-controls="caesar-decrypt" aria-selected="false">Caesar-Entschlüsseln</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="xor-encrypt-tab" data-toggle="pill" href="#xor-encrypt" role="tab" aria-controls="xor-encrypt" aria-selected="false">XOR-Verschlüsseln</a>
+                </li>
+            </ul>
+
+            <!-- Tab-Inhalte für die verschiedene Verschlüsselungen -->
+            <div class="tab-content" id="pills-tabContent">
+                <!-- Caesar-Verschlüsselung tab -->
+                <div class="tab-pane fade show active" id="caesar-encrypt" role="tabpanel" aria-labelledby="caesar-encrypt-tab">
+                    <div class="form-group">
+                        <!-- igabe vo text -->
+                        <label for="caesar-plaintext">Geben Sie Ihren Text ein:</label>
+                        <textarea id="caesar-plaintext" name="caesar-plaintext" rows="4" class="form-control"></textarea>
+                    </div>
+                     <!-- button zum druf clicke -->
+                    <button onclick="encryptCaesar()" class="btn btn-primary">Verschlüsseln</button>
+                    <div class="form-group mt-3">
+                        <!-- usgabe vo de verschlüsselter text -->
+                        <label for="caesar-encrypted">Verschlüsselter Text:</label>
+                        <textarea id="caesar-encrypted" name="caesar-encrypted" rows="4" class="form-control" readonly></textarea>
+                    </div>
+                    <!-- Caesar-Verschlüsselung erklärig text -->
+                    <div class="explanation">
+                        <h5>Caesar-Verschlüsselung</h5>
+                        <p>
+                            Die Caesar-Verschlüsselung ist eine einfache Verschiebechiffre, bei der jeder Buchstabe des Klartexts um einen bestimmten Schlüsselwert verschoben wird.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Caesar-Entschlüsselung tab-->
+                <div class="tab-pane fade" id="caesar-decrypt" role="tabpanel" aria-labelledby="caesar-decrypt-tab">
+                    <div class="form-group">
+                        <!-- igabe vo text -->
+                        <label for="caesar-ciphertext">Geben Sie Ihren verschlüsselten Text ein:</label>
+                        <textarea id="caesar-ciphertext" name="caesar-ciphertext" rows="4" class="form-control"></textarea>
+                    </div>
+                    <!-- button zum druf clicke -->
+                    <button onclick="decryptCaesar()" class="btn btn-primary">Entschlüsseln</button>
+                    <div class="form-group mt-3">
+                        <!-- usgabe vo de entschlüsselter text -->
+                        <label for="caesar-decrypted">Entschlüsselter Text:</label>
+                        <textarea id="caesar-decrypted" name="caesar-decrypted" rows="4" class="form-control" readonly></textarea>
+                    </div>
+                    <!-- Caesar-Entschlüsselung erklärig text -->
+                    <div class="explanation">
+                        <h5>Caesar-Entschlüsselung</h5>
+                        <p>
+                            Die Caesar-Entschlüsselung ist das inverse Verfahren zur Caesar-Verschlüsselung. Dabei wird der verschlüsselte Text mit dem negativen Schlüsselwert rückwärts verschoben, um den Klartext wiederherzustellen.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- XOR-Verschlüsselung -->
+                <div class="tab-pane fade" id="xor-encrypt" role="tabpanel" aria-labelledby="xor-encrypt-tab">
+                    <!-- igabe vo text -->
+                    <div class="form-group">
+                        <label for="xor-plaintext">Geben Sie Ihren Text ein:</label>
+                        <textarea id="xor-plaintext" name="xor-plaintext" rows="4" class="form-control"></textarea>
+                    </div>
+                    <!-- Bi de XOR-Verschlüsselung bruch no also en Schlüssel dazue-->
+                    <div class="form-group">
+                        <label for="xor-key">Geben Sie den XOR-Schlüssel ein:</label>
+                        <input type="text" id="xor-key" name="xor-key" class="form-control">
+                    </div>
+                    <!-- button zum druf clicke -->
+                    <button onclick="encryptXOR()" class="btn btn-primary">Verschlüsseln</button>
+                    <div class="form-group mt-3">
+                        <!-- usgabe vo de verschlüsselter text -->
+                        <label for="xor-encrypted">Verschlüsselter Text:</label>
+                        <textarea id="xor-encrypted" name="xor-encrypted" rows="4" class="form-control" readonly></textarea>
+                    </div>
+                     <!-- XOR-Verschlüsselung erklärig text -->
+                    <div class="explanation">
+                        <h5>XOR-Verschlüsselung</h5>
+                        <p>
+                            Die XOR-Verschlüsselung verwendet einen Schlüssel (eine Zeichenkette), um den Text zu verschlüsseln. Jedes Zeichen des Textes wird mit einem Zeichen des Schlüssels kombiniert, um den verschlüsselten Text zu erzeugen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kartenfuss um die Verlauf zu azeige und au no Dark mode Funktion -->
+        <div class="card-footer">
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#history" aria-expanded="false" aria-controls="history">
+                Verlauf Anzeigen
+            </button>
+            <button class="btn btn-primary" onclick="toggleDarkMode()">Dark/Light Mode</button>
+            <div class="collapse" id="history">
+            </div>
+        </div>
+    </div>
+
+    <!-- Externe Skripte -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        // Funktion zu Caesar-Verschiebig
+        function caesarShift(text, shift) {
+            return text.split('').map(function(c) {
+                if (c.match(/[a-z]/i)) {
+                    var code = c.charCodeAt();
+                    var shiftAmount = ((code >= 65) && (code <= 90)) ? 65 : 97;
+                    return String.fromCharCode(((code - shiftAmount + shift + 26) % 26) + shiftAmount);
+                }
+                return c;
+            }).join('');
+        }
+
+        // Funktion zu XOR-Verschlüsselung text damit es au no resultat gibt
+        function xorEncryptText(text, key) {
+            var result = "";
+            for (var i = 0; i < text.length; i++) {
+                var charCode = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+                result += String.fromCharCode(charCode);
+            }
+            return result;
+        }
+
+        // Funktion zu Ceasar-Verschlüsselung
+        function encryptCaesar() {
+            var plaintext = document.getElementById('caesar-plaintext').value;
+            var encrypted = caesarShift(plaintext, 1);
+            document.getElementById('caesar-encrypted').value = encrypted;
+            saveToHistory("caesar-encryption", plaintext, encrypted);
+        }
+
+        // Funktion zu Ceasar-Entschlüsselung
+        function decryptCaesar() {
+            var ciphertext = document.getElementById('caesar-ciphertext').value;
+            var decrypted = caesarShift(ciphertext, -1);
+            document.getElementById('caesar-decrypted').value = decrypted;
+            saveToHistory("caesar-decryption", ciphertext, decrypted);
+        }
+
+        // Funktion zum Verschlüsseln mit XOR-Verschlüsselung
+        function encryptXOR() {
+            var plaintext = document.getElementById('xor-plaintext').value;
+            var xorKey = document.getElementById('xor-key').value;
+            var encrypted = xorEncryptText(plaintext, xorKey);
+            document.getElementById('xor-encrypted').value = encrypted;
+            saveToHistory("xor-encryption", plaintext, encrypted);
+        }
+
+        // Funktion zum Speichern des Verlaufs
+        function saveToHistory(type, input, output) {
+            var history = JSON.parse(localStorage.getItem("caesarCipherHistory") || "[]");
+            history.unshift({
+                type: type,
+                input: input,
+                output: output,
+                time: new Date().toLocaleString()
+            });
+            if (history.length > 10) {
+                history.length = 10;
+            }
+            localStorage.setItem("caesarCipherHistory", JSON.stringify(history));
+            loadHistory();
+        }
+
+        // Funktion zum Verlaufs zu lade
+        function loadHistory() {
+            var history = JSON.parse(localStorage.getItem("caesarCipherHistory") || "[]");
+            var historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = '<div class="card mt-2"><div class="list-group list-group-flush">';
+            history.forEach(function(item) {
+                historyDiv.innerHTML += '<div class="list-group-item">' + '<p><b>' + item.type + '</b></p>' + '<p>' + item.input + ' ➡️ ' + item.output + '</p>' + '<p><small>' + item.time + '</small></p>' + '</div>';
+            });
+            historyDiv.innerHTML += '</div></div>';
+        }
+
+        // Funktion zum Dark mode zu wechsel und no dazu zu light mode zrugg
+        function toggleDarkMode() {
+            var body = document.body;
+            body.classList.toggle("dark-mode");
+            var card = document.getElementsByClassName("card");
+            for (var i = 0; i < card.length; i++) {
+                card[i].classList.toggle("dark-mode");
+            }
+            var cardHeader = document.getElementsByClassName("card-header");
+            for (var i = 0; i < cardHeader.length; i++) {
+                cardHeader[i].classList.toggle("dark-mode");
+            }
+            var navLink = document.getElementsByClassName("nav-link");
+            for (var i = 0; i < navLink.length; i++) {
+                navLink[i].classList.toggle("dark-mode");
+            }
+            var formGroup = document.getElementsByClassName("form-group");
+            for (var i = 0; i < formGroup.length; i++) {
+                formGroup[i].classList.toggle("dark-mode");
+            }
+            var formControl = document.getElementsByClassName("form-control");
+            for (var i = 0; i < formControl.length; i++) {
+                formControl[i].classList.toggle("dark-mode");
+            }
+            var btnSecondary = document.getElementsByClassName("btn-primary");
+            for (var i = 0; i < btnSecondary.length; i++) {
+                btnSecondary[i].classList.toggle("dark-mode");
+            }
+            var history = document.getElementById("history");
+            history.classList.toggle("dark-mode");
+        }
+
+        // Funktion zum Lades des Verlaufs bi siitestart
+        window.onload = function() {
+            loadHistory();
+        }
+    </script>
+</body>
+</html>
