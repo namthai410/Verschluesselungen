@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verschlüsselung</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        body.dark {
+            background-color: black;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .dark-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.5s;
+        }
+        .dark-mode:hover {
+            background-color: #0069d9;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .option label {
+            margin-right: 10px;
+        }
+        .option input[type="radio"] {
+            margin-right: 5px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verschlüsselung</h1>
+        <div class="options">
+            <div class="option">
+                <input type="radio" name="encryption" id="caesar" value="caesar" checked>
+                <label for="caesar">Caesar-Verschlüsselung</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="encryption" id="xor" value="xor">
+                <label for="xor">XOR-Verschlüsselung</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="encryption" id="reverse" value="reverse">
+                    <label for="reverse">Reverse-Verschlüsselung</label>
+            </div>
+        </div>
+        <div class="tab active" id="caesar-tab">
+            <label for="caesar-text">Geben Sie den zu verschlüsselnden Text ein:</label>
+            <input type="text" id="caesar-text">
+            <label for="caesar-shift">Geben Sie den Verschiebewert ein:</label>
+            <input type="text" id="caesar-shift">
+            <button onclick="caesarEncrypt()">Verschlüsseln</button>
+            <button onclick="caesarDecrypt()">Entschlüsseln</button>
+            <div class="result" id="caesar-result"></div>
+        </div>
+        <div class="tab" id="xor-tab">
+            <label for="xor-text">Geben Sie den zu verschlüsselnden Text ein:</label>
+            <input type="text" id="xor-text">
+            <button onclick="xorEncrypt()">Verschlüsseln</button>
+            <button onclick="xorDecrypt()">Entschlüsseln</button>
+            <div class="result" id="xor-result"></div>
+        </div>
+        <div class="tab" id="reverse-tab">
+            <label for="reverse-text">Geben Sie den zu verschlüsselnden Text ein:</label>
+            <input type="text" id="reverse-text">
+            <button onclick="reverseEncrypt()">Verschlüsseln</button>
+            <button onclick="reverseDecrypt()">Entschlüsseln</button>
+            <div class="result" id="reverse-result"></div>
+        </div>
+        <div class="error-message" id="error-message"></div>
+        <button class="dark-mode" onclick="toggleDarkMode()">Dunkler Modus</button>
+    </div>
+    <script>
+        var caesarTab = document.getElementById("caesar-tab");
+        var xorTab = document.getElementById("xor-tab");
+        var reverseTab = document.getElementById("reverse-tab");
+
+
+    var caesarText = document.getElementById("caesar-text");
+    var caesarShift = document.getElementById("caesar-shift");
+    var caesarResult = document.getElementById("caesar-result");
+
+    var xorText = document.getElementById("xor-text");
+    var xorResult = document.getElementById("xor-result");
+
+    var reverseText = document.getElementById("reverse-text");
+    var reverseResult = document.getElementById("reverse-result");
+
+    var errorMessage = document.getElementById("error-message");
+
+    function showTab(tabId) {
+        var tabs = document.getElementsByClassName("tab");
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove("active");
+        }
+        var tab = document.getElementById(tabId);
+        if (tab) {
+            tab.classList.add("active");
+        }
+    }
+
+    function caesarEncrypt() {
+        var text = caesarText.value;
+        var shift = parseInt(caesarShift.value);
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        if (isNaN(shift)) {
+            errorMessage.innerHTML = "Bitte geben Sie eine gültige Verschiebungszahl ein.";
+            return;
+        }
+        result = caesarEncryptHelper(text, shift);
+        caesarResult.innerHTML = result;
+    }
+
+    function caesarDecrypt() {
+        var text = caesarText.value;
+        var shift = parseInt(caesarShift.value);
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        if (isNaN(shift)) {
+            errorMessage.innerHTML = "Bitte geben Sie eine gültige Verschiebungszahl ein.";
+            return;
+        }
+        result = caesarDecryptHelper(text, shift);
+        caesarResult.innerHTML = result;
+    }
+
+    function caesarEncryptHelper(text, shift) {
+        var result = "";
+        for (var i = 0; i < text.length; i++) {
+            var charCode = text.charCodeAt(i);
+            if (charCode >= 65 && charCode <= 90) { // Großbuchstaben
+                result += String.fromCharCode((charCode - 65 + shift) % 26 + 65);
+            } else if (charCode >= 97 && charCode <= 122) { // Kleinbuchstaben
+                result += String.fromCharCode((charCode - 97 + shift) % 26 + 97);
+            } else { // Nicht-alphabetische Zeichen
+                result += text.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    function caesarDecryptHelper(text, shift) {
+        var result = "";
+        for (var i = 0; i < text.length; i++) {
+            var charCode = text.charCodeAt(i);
+            if (charCode >= 65 && charCode <= 90) { // Großbuchstaben
+                result += String.fromCharCode((charCode - 65 - shift + 26) % 26 + 65);
+            } else if (charCode >= 97 && charCode <= 122) { // Kleinbuchstaben
+                result += String.fromCharCode((charCode - 97 - shift + 26) % 26 + 97);
+            } else { // Nicht-alphabetische Zeichen
+                result += text.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    function xorEncrypt() {
+        var text = xorText.value;
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        result = xorEncryptHelper(text);
+        xorResult.innerHTML = result;
+    }
+
+    function xorDecrypt() {
+        var text = xorText.value;
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        result = xorDecryptHelper(text);
+        xorResult.innerHTML = result;
+    }
+
+    function xorEncryptHelper(text) {
+        var key = "geheimschluessel";
+        var result = "";
+        for (var i = 0; i < text.length; i++) {
+            var encryptedChar = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+            result += "\\x" + encryptedChar.toString(16).padStart(2, "0");
+        }
+        return result;
+    }
+
+    function xorDecryptHelper(text) {
+        var key = "geheimschluessel";
+        var result = "";
+        for (var i = 0; i < text.length; i += 4) {
+            var hexCode = text.substr(i + 2, 2);
+            var decryptedChar = parseInt(hexCode, 16) ^ key.charCodeAt((i / 4) % key.length);
+            result += String.fromCharCode(decryptedChar);
+        }
+        return result;
+    }
+
+    function reverseEncrypt() {
+        var text = reverseText.value;
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        result = reverseEncryptHelper(text);
+        reverseResult.innerHTML = result;
+    }
+
+    function reverseDecrypt() {
+        var text = reverseText.value;
+        var result = "";
+        errorMessage.innerHTML = "";
+
+        if (text.trim() === "") {
+            errorMessage.innerHTML = "Bitte geben Sie einen Text ein.";
+            return;
+        }
+
+        result = reverseEncryptHelper(text);
+        reverseResult.innerHTML = result;
+    }
+
+    function reverseEncryptHelper(text) {
+        var result = "";
+        for (var i = text.length - 1; i >= 0; i--) {
+            result += text.charAt(i);
+        }
+        return result;
+    }
+
+    function toggleDarkMode() {
+        var body = document.body;
+        body.classList.toggle("dark");
+    }
+
+    document.getElementById("caesar").addEventListener("change", function() {
+        showTab("caesar-tab");
+    });
+
+    document.getElementById("xor").addEventListener("change", function() {
+        showTab("xor-tab");
+    });
+
+    document.getElementById("reverse").addEventListener("change", function() {
+        showTab("reverse-tab");
+    });
+</script>
+
+</body>
+</html>
